@@ -15,7 +15,9 @@ import {
   BarChart3,
   LogOut,
   Bell,
-  UserCheck
+  UserCheck,
+  Building2,
+  Calendar
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
