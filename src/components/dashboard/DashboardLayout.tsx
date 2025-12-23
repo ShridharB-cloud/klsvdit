@@ -1,12 +1,12 @@
 import { ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { 
-  GraduationCap, 
-  LayoutDashboard, 
-  FolderKanban, 
-  BookOpen, 
-  FileText, 
+import {
+  GraduationCap,
+  LayoutDashboard,
+  FolderKanban,
+  BookOpen,
+  FileText,
   Calendar,
   Users,
   ClipboardCheck,
@@ -14,7 +14,8 @@ import {
   Settings,
   BarChart3,
   LogOut,
-  Bell
+  Bell,
+  UserCheck
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -43,8 +44,9 @@ const mentorNavItems = [
 
 const adminNavItems = [
   { icon: LayoutDashboard, label: "Overview", href: "/dashboard/admin" },
-  { icon: Settings, label: "Academic Setup", href: "/dashboard/admin/setup" },
+  { icon: UserCheck, label: "User Management", href: "/dashboard/admin/users" },
   { icon: Users, label: "Group Management", href: "/dashboard/admin/groups" },
+  { icon: Settings, label: "Academic Setup", href: "/dashboard/admin/setup" },
   { icon: FolderKanban, label: "Phase Config", href: "/dashboard/admin/phases" },
   { icon: BarChart3, label: "Reports", href: "/dashboard/admin/reports" },
 ];
@@ -108,8 +110,8 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
 
         {/* Logout */}
         <div className="p-4 border-t border-sidebar-border">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             className="w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
             onClick={handleLogout}
           >

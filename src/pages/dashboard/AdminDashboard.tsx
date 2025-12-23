@@ -4,16 +4,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { 
-  Users, 
-  FolderKanban, 
-  UserCheck, 
+import {
+  Users,
+  FolderKanban,
+  UserCheck,
   Building2,
   ArrowRight,
   Plus,
   Download,
   AlertTriangle
 } from "lucide-react";
+import { useAdminStats } from "@/hooks/useAdminStats";
 
 const mockDepartmentStats = [
   { name: "Computer Science", groups: 15, progress: 68, onTrack: 12, delayed: 3 },
@@ -36,6 +37,8 @@ const mockRecentActivity = [
 ];
 
 export default function AdminDashboard() {
+  const { data: stats, isLoading } = useAdminStats();
+
   return (
     <DashboardLayout role="admin">
       <div className="space-y-6">
@@ -63,27 +66,27 @@ export default function AdminDashboard() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatsCard
             title="Total Groups"
-            value={39}
+            value={isLoading ? "..." : stats?.totalGroups || 0}
             description="Active this semester"
             icon={FolderKanban}
             variant="primary"
           />
           <StatsCard
             title="Total Students"
-            value={152}
+            value={isLoading ? "..." : stats?.totalStudents || 0}
             description="Across all groups"
             icon={Users}
           />
           <StatsCard
             title="Mentors"
-            value={18}
+            value={isLoading ? "..." : stats?.totalMentors || 0}
             description="Faculty assigned"
             icon={UserCheck}
             variant="success"
           />
           <StatsCard
             title="Departments"
-            value={4}
+            value={isLoading ? "..." : stats?.totalDepartments || 0}
             description="Participating"
             icon={Building2}
           />
@@ -136,11 +139,14 @@ export default function AdminDashboard() {
                   <AlertTriangle className="h-5 w-5 text-warning" />
                   Delayed Groups
                 </CardTitle>
-                <Badge variant="warning">{mockDelayedGroups.length} groups</Badge>
+                <Badge variant="warning">{stats?.delayedGroups?.length || 0} groups</Badge>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              {mockDelayedGroups.map((group) => (
+              {stats?.delayedGroups?.length === 0 && (
+                <p className="text-sm text-muted-foreground">No groups are currently marked as delayed.</p>
+              )}
+              {stats?.delayedGroups?.map((group: any) => (
                 <div
                   key={group.id}
                   className="flex items-center justify-between p-4 rounded-lg border border-warning/20 bg-warning/5"
@@ -149,7 +155,7 @@ export default function AdminDashboard() {
                     <div className="flex items-center gap-2 mb-1">
                       <Badge variant="secondary">{group.id}</Badge>
                       <span className="text-xs text-warning font-medium">
-                        {group.daysDelayed} days behind
+                        Attention Needed
                       </span>
                     </div>
                     <p className="text-sm font-medium">{group.project}</p>
