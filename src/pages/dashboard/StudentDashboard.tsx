@@ -49,7 +49,10 @@ const mockUpcomingEvents = [
   { title: "Group Discussion", date: "Jan 18, 2024", type: "meeting" },
 ];
 
+import { useNavigate } from "react-router-dom";
+
 export default function StudentDashboard() {
+  const navigate = useNavigate();
   const { data: realGroupData, isLoading: groupLoading } = useStudentGroup();
   const { diaryEntries: realDiaryEntries, isLoading: diaryLoading } = useProjectDiary();
   const { data: realPhases, isLoading: phasesLoading } = useProjectPhases();
@@ -234,7 +237,7 @@ export default function StudentDashboard() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Phase Progress</CardTitle>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={() => navigate("/dashboard/student/phases")}>
                   View Details
                 </Button>
               </div>
