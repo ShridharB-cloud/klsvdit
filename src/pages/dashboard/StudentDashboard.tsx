@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useStudentGroup } from "@/hooks/useStudentGroup";
 import { useProjectDiary } from "@/hooks/useProjectDiary";
 import { useProjectPhases } from "@/hooks/useProjectPhases";
+import { useMeetings } from "@/hooks/useMeetings";
 import { AddDiaryEntryDialog } from "@/components/dashboard/AddDiaryEntryDialog";
 import {
   FolderKanban,
@@ -56,6 +57,7 @@ export default function StudentDashboard() {
   const { data: realGroupData, isLoading: groupLoading } = useStudentGroup();
   const { diaryEntries: realDiaryEntries, isLoading: diaryLoading } = useProjectDiary();
   const { data: realPhases, isLoading: phasesLoading } = useProjectPhases();
+  const { meetings: realMeetings, isLoading: meetingsLoading } = useMeetings();
 
   // Use real data if available, otherwise fallback to mock data (Prototype Mode)
   const groupData = realGroupData || mockGroupData;
@@ -208,26 +210,32 @@ export default function StudentDashboard() {
             </CardContent>
           </Card>
 
-          {/* Upcoming Events - Mock for now */}
+          {/* Upcoming Events - Connected */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Upcoming Events</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {mockUpcomingEvents.map((event, index) => (
+              {(realMeetings || mockUpcomingEvents).slice(0, 3).map((event: any, index: number) => (
                 <div
                   key={index}
                   className="flex items-start gap-3 p-3 rounded-lg bg-secondary/50"
                 >
-                  <div className={`h-2 w-2 rounded-full mt-2 ${event.type === "deadline" ? "bg-warning" : "bg-primary"
+                  <div className={`h-2 w-2 rounded-full mt-2 ${(event.type === "deadline" || event.meeting_type === "review") ? "bg-warning" : "bg-primary"
                     }`} />
                   <div>
                     <p className="font-medium text-sm">{event.title}</p>
-                    <p className="text-xs text-muted-foreground">{event.date}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {event.scheduled_at
+                        // Format real date
+                        ? new Date(event.scheduled_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
+                        // Or mock date
+                        : event.date}
+                    </p>
                   </div>
                 </div>
               ))}
-              <Button variant="ghost" className="w-full" size="sm">
+              <Button variant="ghost" className="w-full" size="sm" onClick={() => navigate("/dashboard/student/schedule")}>
                 View Full Schedule
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
