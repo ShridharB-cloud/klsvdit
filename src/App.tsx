@@ -18,6 +18,7 @@ import MentorAnnouncements from "./pages/dashboard/MentorAnnouncements";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import AdminUsers from "./pages/dashboard/AdminUsers";
 import AdminGroups from "./pages/dashboard/AdminGroups";
+import AdminPhases from "./pages/dashboard/AdminPhases";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -44,6 +45,7 @@ const App = () => (
           <Route path="/dashboard/admin" element={<AdminDashboard />} />
           <Route path="/dashboard/admin/users" element={<AdminUsers />} />
           <Route path="/dashboard/admin/groups" element={<AdminGroups />} />
+          <Route path="/dashboard/admin/phases" element={<AdminPhases />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
