@@ -69,6 +69,9 @@ export default function StudentDashboard() {
   const currentPhaseObj = phases.find(p => p.status === 'current') || phases.find(p => p.status === 'completed') || phases[0];
   const currentPhaseName = currentPhaseObj ? currentPhaseObj.name : "Phase 1";
 
+  const docCount = 8; // Placeholder for now, or fetch if needed
+
+
   if (groupLoading || diaryLoading || phasesLoading) {
     return (
       <DashboardLayout role="student">
@@ -141,12 +144,14 @@ export default function StudentDashboard() {
             icon={BookOpen}
             variant="success"
           />
-          <StatsCard
-            title="Documents"
-            value={8}
-            description="Uploaded files"
-            icon={FileText}
-          />
+          <div onClick={() => navigate("/dashboard/student/documents")} className="cursor-pointer transition-transform hover:scale-105">
+            <StatsCard
+              title="Documents"
+              value={docCount}
+              description="Uploaded files"
+              icon={FileText}
+            />
+          </div>
           <StatsCard
             title="Days to Deadline"
             value={10}
