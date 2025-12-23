@@ -3,10 +3,11 @@ import { StatsCard } from "@/components/dashboard/StatsCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { 
-  Users, 
-  ClipboardCheck, 
-  BookOpen, 
+import { useMentorGroups } from "@/hooks/useMentorGroups";
+import {
+  Users,
+  ClipboardCheck,
+  BookOpen,
   AlertCircle,
   ArrowRight,
   CheckCircle2,
@@ -77,6 +78,8 @@ const statusConfig = {
 };
 
 export default function MentorDashboard() {
+  const { groups: realGroups, isLoading } = useMentorGroups();
+
   return (
     <DashboardLayout role="mentor">
       <div className="space-y-6">
@@ -135,32 +138,35 @@ export default function MentorDashboard() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 sm:grid-cols-2">
-              {mockAssignedGroups.map((group) => {
-                const StatusIcon = statusConfig[group.status].icon;
+              {(realGroups && realGroups.length > 0 ? realGroups : mockAssignedGroups).map((group: any) => {
+                const status = group.status || "on-track"; // Default status if missing
+                const config = statusConfig[status as keyof typeof statusConfig] || statusConfig["on-track"];
+                const StatusIcon = config.icon;
+
                 return (
                   <div
                     key={group.id}
                     className="p-4 rounded-lg border hover:shadow-card transition-shadow cursor-pointer"
                   >
                     <div className="flex items-start justify-between mb-3">
-                      <Badge variant="secondary">{group.id}</Badge>
-                      <Badge variant={statusConfig[group.status].variant}>
+                      <Badge variant="secondary">{group.group_id || group.id}</Badge>
+                      <Badge variant={config.variant}>
                         <StatusIcon className="h-3 w-3 mr-1" />
-                        {statusConfig[group.status].label}
+                        {config.label}
                       </Badge>
                     </div>
                     <h4 className="font-medium text-foreground mb-2 line-clamp-2">
-                      {group.projectTitle}
+                      {group.projectTitle || group.project_title}
                     </h4>
                     <div className="flex items-center justify-between text-sm text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Users className="h-3.5 w-3.5" />
-                        {group.members} members
+                        {group.members || group.members_count || 0} members
                       </span>
-                      <span>Phase {group.currentPhase}</span>
+                      <span>Phase {group.currentPhase || group.current_phase || 1}</span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-2">
-                      Last activity: {group.lastActivity}
+                      Last activity: {group.lastActivity || (group.updated_at ? new Date(group.updated_at).toLocaleDateString() : "Just now")}
                     </p>
                   </div>
                 );
@@ -185,10 +191,9 @@ export default function MentorDashboard() {
                   className="flex items-center justify-between p-4 rounded-lg border"
                 >
                   <div className="flex items-start gap-3">
-                    <div className={`h-2 w-2 rounded-full mt-2 ${
-                      review.priority === "high" ? "bg-destructive" :
+                    <div className={`h-2 w-2 rounded-full mt-2 ${review.priority === "high" ? "bg-destructive" :
                       review.priority === "medium" ? "bg-warning" : "bg-muted-foreground"
-                    }`} />
+                      }`} />
                     <div>
                       <p className="font-medium text-sm">{review.type}</p>
                       <p className="text-xs text-muted-foreground">
