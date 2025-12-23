@@ -11,6 +11,7 @@ import StudentDiary from "./pages/dashboard/StudentDiary";
 import StudentDocuments from "./pages/dashboard/StudentDocuments";
 import StudentSchedule from "./pages/dashboard/StudentSchedule";
 import MentorDashboard from "./pages/dashboard/MentorDashboard";
+import MentorGroups from "./pages/dashboard/MentorGroups";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/dashboard/student/documents" element={<StudentDocuments />} />
           <Route path="/dashboard/student/schedule" element={<StudentSchedule />} />
           <Route path="/dashboard/mentor" element={<MentorDashboard />} />
+          <Route path="/dashboard/mentor/groups" element={<MentorGroups />} />
           <Route path="/dashboard/admin" element={<AdminDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
