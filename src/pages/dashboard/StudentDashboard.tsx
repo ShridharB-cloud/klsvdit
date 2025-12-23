@@ -277,7 +277,7 @@ export default function StudentDashboard() {
                   </div>
                 </div>
               ))}
-              <Button variant="ghost" className="w-full" size="sm">
+              <Button variant="ghost" className="w-full" size="sm" onClick={() => navigate("/dashboard/student/diary")}>
                 View All Entries
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
