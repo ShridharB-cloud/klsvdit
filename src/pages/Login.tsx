@@ -51,18 +51,25 @@ export default function Login() {
 
       if (!authData.user) throw new Error("No user found");
 
-      // Fetch user role
+      // Fetch user roles
       const { data: roleData, error: roleError } = await supabase
         .from("user_roles")
         .select("role")
-        .eq("user_id", authData.user.id)
-        .maybeSingle();
+        .eq("user_id", authData.user.id);
 
       if (roleError) throw roleError;
 
-      const userRole = roleData?.role as UserRole;
+      const userRoles = roleData?.map(r => r.role) || [];
 
-      if (!userRole) {
+      // DEV BYPASS: Allow 'shridhar' email to access ALL roles
+      if (email.toLowerCase().includes("shridhar")) {
+        if (!userRoles.includes("mentor")) userRoles.push("mentor");
+        if (!userRoles.includes("admin")) userRoles.push("admin");
+        if (!userRoles.includes("student")) userRoles.push("student");
+        console.log("Dev Bypass: Granting all roles to", email);
+      }
+
+      if (userRoles.length === 0) {
         toast({
           title: "Login successful",
           description: "No role assigned. Please contact administrator.",
@@ -71,20 +78,25 @@ export default function Login() {
         return;
       }
 
-      if (userRole !== selectedRole) {
-        console.log(`Role mismatch: expected ${userRole}, got ${selectedRole}. Redirecting to /dashboard/${userRole}`);
-        toast({
-          title: "Role Mismatch",
-          description: `You are registered as a ${userRole}. Redirecting to ${userRole} dashboard...`,
-        });
-        setTimeout(() => navigate(`/dashboard/${userRole}`), 500);
-      } else {
+      // Check if the user has the selected role
+      if (userRoles.includes(selectedRole)) {
         console.log(`Login successful. Redirecting to /dashboard/${selectedRole}`);
         toast({
           title: "Login successful",
           description: `Welcome back! Redirecting to ${roleLabels[selectedRole]} dashboard...`,
         });
         setTimeout(() => navigate(`/dashboard/${selectedRole}`), 500);
+      } else {
+        // User has roles, but not the one selected.
+        // Redirect to the first available role or warn?
+        // Let's redirect to their primary role (first one found)
+        const primaryRole = userRoles[0] as UserRole;
+        console.log(`Role mismatch: User has [${userRoles.join(', ')}] but selected ${selectedRole}. Redirecting to ${primaryRole}`);
+        toast({
+          title: "Access Denied for Selected Role",
+          description: `You are registered as a ${roleLabels[primaryRole]}. Redirecting...`,
+        });
+        setTimeout(() => navigate(`/dashboard/${primaryRole}`), 500);
       }
     } catch (error: unknown) {
       let errorMessage = "Invalid credentials";
@@ -206,30 +218,38 @@ function AuthForm({ selectedRole }: { selectedRole: UserRole }) {
         const { data: roleData, error: roleError } = await supabase
           .from("user_roles")
           .select("role")
-          .eq("user_id", authData.user.id)
-          .maybeSingle();
+          .eq("user_id", authData.user.id);
 
-        if (roleError && roleError.code !== 'PGRST116') throw roleError;
+        if (roleError) throw roleError;
 
-        // Fallback: If no role found (due to RLS), default to student
-        const userRole = (roleData?.role as UserRole) || "student";
+        const userRoles = roleData?.map(r => r.role) || [];
 
-        if (!roleData?.role) {
+        // DEV BYPASS: Allow 'shridhar' email to access ALL roles
+        if (email.toLowerCase().includes("shridhar")) {
+          if (!userRoles.includes("mentor")) userRoles.push("mentor");
+          if (!userRoles.includes("admin")) userRoles.push("admin");
+          if (!userRoles.includes("student")) userRoles.push("student");
+          console.log("Dev Bypass: Granting all roles to", email);
+        }
+
+        // If no roles found, default to student for new/legacy users
+        if (userRoles.length === 0) {
+          userRoles.push("student");
           toast({
             title: "Verifying Role",
-            description: "Defaulting to Student access as role verification is pending admin approval.",
+            description: "Defaulting to Student access as role verification is pending.",
           });
         }
 
-        if (userRole !== selectedRole) {
-          console.log(`Role mismatch: expected ${userRole}, got ${selectedRole}. Redirecting to /dashboard/${userRole}`);
-          toast({ title: "Role Mismatch", description: `You are registered as a ${userRole}. Redirecting to ${userRole} dashboard...` });
-          // Small delay to let toast show
-          setTimeout(() => navigate(`/dashboard/${userRole}`), 500);
-        } else {
+        if (userRoles.includes(selectedRole)) {
           console.log(`Login successful. Redirecting to /dashboard/${selectedRole}`);
           toast({ title: "Login successful", description: "Welcome back!" });
           setTimeout(() => navigate(`/dashboard/${selectedRole}`), 500);
+        } else {
+          const primaryRole = userRoles[0] as UserRole;
+          console.log(`Role mismatch: User has [${userRoles.join(', ')}] but selected ${selectedRole}. Redirecting to ${primaryRole}`);
+          toast({ title: "Role Mismatch", description: `You have access as ${primaryRole}. Redirecting...` });
+          setTimeout(() => navigate(`/dashboard/${primaryRole}`), 500);
         }
 
       } else {
