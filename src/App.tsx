@@ -13,6 +13,8 @@ import StudentSchedule from "./pages/dashboard/StudentSchedule";
 import MentorDashboard from "./pages/dashboard/MentorDashboard";
 import MentorGroups from "./pages/dashboard/MentorGroups";
 import MentorReviews from "./pages/dashboard/MentorReviews";
+import MentorDiaryReviews from "./pages/dashboard/MentorDiaryReviews";
+import MentorAnnouncements from "./pages/dashboard/MentorAnnouncements";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -35,6 +37,8 @@ const App = () => (
           <Route path="/dashboard/mentor" element={<MentorDashboard />} />
           <Route path="/dashboard/mentor/groups" element={<MentorGroups />} />
           <Route path="/dashboard/mentor/reviews" element={<MentorReviews />} />
+          <Route path="/dashboard/mentor/diary-reviews" element={<MentorDiaryReviews />} />
+          <Route path="/dashboard/mentor/announcements" element={<MentorAnnouncements />} />
           <Route path="/dashboard/admin" element={<AdminDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

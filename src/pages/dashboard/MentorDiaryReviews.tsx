@@ -1,16 +1,12 @@
 
 import { useMentorReviews } from "@/hooks/useMentorReviews";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
-    ClipboardCheck,
     BookOpen,
-    CheckCircle2,
-    XCircle,
-    MessageSquare
 } from "lucide-react";
 import { useState } from "react";
 import {
@@ -20,17 +16,16 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog";
 
-export default function MentorReviews() {
-    const { reviews, isLoading, approvePhase } = useMentorReviews();
+export default function MentorDiaryReviews() {
+    const { reviews, isLoading, reviewDiary } = useMentorReviews();
     const [selectedItem, setSelectedItem] = useState<any>(null);
     const [remarks, setRemarks] = useState("");
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    // Filter only phase reviews
-    const phaseReviews = reviews?.filter(r => r.type === 'phase');
+    // Filter only diary reviews
+    const diaryReviews = reviews?.filter(r => r.type === 'diary');
 
     const handleAction = (item: any) => {
         setSelectedItem(item);
@@ -40,7 +35,7 @@ export default function MentorReviews() {
 
     const handleSubmit = () => {
         if (!selectedItem) return;
-        approvePhase.mutate({ id: selectedItem.id, remarks });
+        reviewDiary.mutate({ id: selectedItem.id, comments: remarks });
         setIsDialogOpen(false);
     };
 
@@ -48,9 +43,9 @@ export default function MentorReviews() {
         <DashboardLayout role="mentor">
             <div className="space-y-6">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Phase Reviews</h2>
+                    <h2 className="text-3xl font-bold tracking-tight">Diary Reviews</h2>
                     <p className="text-muted-foreground">
-                        Review and approve project phase submissions.
+                        Check weekly progress logs and provide feedback.
                     </p>
                 </div>
 
@@ -58,20 +53,20 @@ export default function MentorReviews() {
                     <div>Loading reviews...</div>
                 ) : (
                     <div className="grid gap-6">
-                        {phaseReviews?.length === 0 && (
+                        {diaryReviews?.length === 0 && (
                             <div className="text-center py-10 text-muted-foreground">
-                                No pending phase reviews found.
+                                No pending diary reviews found.
                             </div>
                         )}
 
-                        {phaseReviews?.map((item) => (
+                        {diaryReviews?.map((item) => (
                             <Card key={`${item.type}-${item.id}`} className="flex flex-col sm:flex-row shadow-sm hover:shadow-md transition-shadow">
                                 <div className="p-6 flex-1">
                                     <div className="flex items-start justify-between">
                                         <div className="space-y-1">
                                             <div className="flex items-center gap-2">
-                                                <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                                                    <ClipboardCheck className="w-3 h-3 mr-1" /> Phase
+                                                <Badge variant="outline" className="bg-orange-500/10 text-orange-600 border-orange-500/20">
+                                                    <BookOpen className="w-3 h-3 mr-1" /> Diary
                                                 </Badge>
                                                 <span className="text-sm text-muted-foreground">
                                                     {new Date(item.submittedAt).toLocaleDateString()}
@@ -79,12 +74,17 @@ export default function MentorReviews() {
                                             </div>
                                             <h3 className="font-semibold text-lg">{item.title}</h3>
                                             <p className="text-muted-foreground">{item.subtitle}</p>
+                                            {/* Display full work done if needed, or keep truncated in subtitle */}
+                                            <div className="mt-2 text-sm bg-muted/50 p-2 rounded">
+                                                <p className="font-medium text-xs text-muted-foreground mb-1">Work Done:</p>
+                                                {item.data.work_done}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="p-6 border-t sm:border-t-0 sm:border-l flex items-center justify-center bg-secondary/5">
                                     <Button onClick={() => handleAction(item)}>
-                                        Review
+                                        Review Entry
                                     </Button>
                                 </div>
                             </Card>
@@ -95,16 +95,14 @@ export default function MentorReviews() {
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>
-                                {selectedItem?.type === 'phase' ? 'Approve Phase' : 'Review Diary Entry'}
-                            </DialogTitle>
+                            <DialogTitle>Review Diary Entry</DialogTitle>
                             <DialogDescription>
-                                Provide feedback or remarks for the student group.
+                                Provide feedback for the student's weekly log.
                             </DialogDescription>
                         </DialogHeader>
                         <div className="py-4">
                             <Textarea
-                                placeholder={selectedItem?.type === 'phase' ? "Enter remarks for approval..." : "Enter comments for the student..."}
+                                placeholder="Enter comments for the student..."
                                 value={remarks}
                                 onChange={(e) => setRemarks(e.target.value)}
                                 className="min-h-[100px]"
@@ -113,7 +111,7 @@ export default function MentorReviews() {
                         <DialogFooter>
                             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
                             <Button onClick={handleSubmit}>
-                                Approve
+                                Submit Review
                             </Button>
                         </DialogFooter>
                     </DialogContent>
