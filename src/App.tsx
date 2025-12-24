@@ -24,38 +24,41 @@ import AdminAcademicSetup from "./pages/dashboard/AdminAcademicSetup";
 
 
 import NotFound from "./pages/NotFound";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/dashboard/student" element={<StudentDashboard />} />
-          <Route path="/dashboard/student/phases" element={<StudentPhases />} />
-          <Route path="/dashboard/student/diary" element={<StudentDiary />} />
-          <Route path="/dashboard/student/documents" element={<StudentDocuments />} />
-          <Route path="/dashboard/student/schedule" element={<StudentSchedule />} />
-          <Route path="/dashboard/mentor" element={<MentorDashboard />} />
-          <Route path="/dashboard/mentor/groups" element={<MentorGroups />} />
-          <Route path="/dashboard/mentor/reviews" element={<MentorReviews />} />
-          <Route path="/dashboard/mentor/diary-reviews" element={<MentorDiaryReviews />} />
-          <Route path="/dashboard/mentor/announcements" element={<MentorAnnouncements />} />
-          <Route path="/dashboard/admin" element={<AdminDashboard />} />
-          <Route path="/dashboard/admin/users" element={<AdminUsers />} />
-          <Route path="/dashboard/admin/groups" element={<AdminGroups />} />
-          <Route path="/dashboard/admin/phases" element={<AdminPhases />} />
-          <Route path="/dashboard/admin/setup" element={<AdminAcademicSetup />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/dashboard/student" element={<StudentDashboard />} />
+            <Route path="/dashboard/student/phases" element={<StudentPhases />} />
+            <Route path="/dashboard/student/diary" element={<StudentDiary />} />
+            <Route path="/dashboard/student/documents" element={<StudentDocuments />} />
+            <Route path="/dashboard/student/schedule" element={<StudentSchedule />} />
+            <Route path="/dashboard/mentor" element={<MentorDashboard />} />
+            <Route path="/dashboard/mentor/groups" element={<MentorGroups />} />
+            <Route path="/dashboard/mentor/reviews" element={<MentorReviews />} />
+            <Route path="/dashboard/mentor/diary-reviews" element={<MentorDiaryReviews />} />
+            <Route path="/dashboard/mentor/announcements" element={<MentorAnnouncements />} />
+            <Route path="/dashboard/admin" element={<AdminDashboard />} />
+            <Route path="/dashboard/admin/users" element={<AdminUsers />} />
+            <Route path="/dashboard/admin/groups" element={<AdminGroups />} />
+            <Route path="/dashboard/admin/phases" element={<AdminPhases />} />
+            <Route path="/dashboard/admin/setup" element={<AdminAcademicSetup />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

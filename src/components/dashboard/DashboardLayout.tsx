@@ -19,6 +19,7 @@ import {
   Building2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ModeToggle } from "@/components/mode-toggle";
 
 type UserRole = "student" | "mentor" | "admin";
 
@@ -138,6 +139,7 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
               <Bell className="h-5 w-5" />
               <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-destructive" />
             </Button>
+            <ModeToggle />
             <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
               <span className="text-sm font-medium text-primary">
                 {role[0].toUpperCase()}
