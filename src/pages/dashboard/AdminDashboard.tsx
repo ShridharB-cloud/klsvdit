@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,6 +38,7 @@ const mockRecentActivity = [
 ];
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const { data: stats, isLoading } = useAdminStats();
 
   return (
@@ -51,11 +53,8 @@ export default function AdminDashboard() {
             </p>
           </div>
           <div className="flex gap-3">
-            <Button variant="outline">
-              <Download className="h-4 w-4 mr-2" />
-              Export Report
-            </Button>
-            <Button variant="hero">
+
+            <Button variant="hero" onClick={() => navigate("/dashboard/admin/groups")}>
               <Plus className="h-4 w-4 mr-2" />
               Create Group
             </Button>
@@ -203,22 +202,19 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <Button variant="outline" className="h-auto py-4 flex-col gap-2">
+              <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => navigate("/dashboard/admin/groups")}>
                 <Users className="h-5 w-5" />
                 <span>Manage Groups</span>
               </Button>
-              <Button variant="outline" className="h-auto py-4 flex-col gap-2">
+              <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => navigate("/dashboard/admin/groups")}>
                 <UserCheck className="h-5 w-5" />
                 <span>Assign Mentors</span>
               </Button>
-              <Button variant="outline" className="h-auto py-4 flex-col gap-2">
+              <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => navigate("/dashboard/admin/phases")}>
                 <FolderKanban className="h-5 w-5" />
                 <span>Phase Settings</span>
               </Button>
-              <Button variant="outline" className="h-auto py-4 flex-col gap-2">
-                <Download className="h-5 w-5" />
-                <span>Generate Reports</span>
-              </Button>
+
             </div>
           </CardContent>
         </Card>

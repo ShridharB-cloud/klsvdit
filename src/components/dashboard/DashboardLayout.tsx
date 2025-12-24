@@ -16,8 +16,7 @@ import {
   LogOut,
   Bell,
   UserCheck,
-  Building2,
-  Calendar
+  Building2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -50,7 +49,7 @@ const adminNavItems = [
   { icon: Users, label: "Group Management", href: "/dashboard/admin/groups" },
   { icon: Settings, label: "Academic Setup", href: "/dashboard/admin/setup" },
   { icon: FolderKanban, label: "Phase Config", href: "/dashboard/admin/phases" },
-  { icon: BarChart3, label: "Reports", href: "/dashboard/admin/reports" },
+
 ];
 
 const navItemsByRole = {
